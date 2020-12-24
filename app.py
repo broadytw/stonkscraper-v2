@@ -1,11 +1,85 @@
 # This was created by Danila Popel and Nikita Popel. This project was originally created on December 20th, 2020.
-
 from bs4 import BeautifulSoup
 import urllib.request, os, platform, time, csv, requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from scraper import *
+from tkinter import *
+from tkinter.ttk import *
+import numpy as np
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
+"""
+def dateTranslate(inputDate):
+
+
+    return date
+"""
+class GUI:
+    def __init__(self):
+        self.window = Tk()
+        self.window.resizable(width = False, height = False)
+        self.window.title("Stonk Scraper")
+        self.window.geometry('1280x480')
+        photo = PhotoImage(file = "cashmoney.png")
+        self.window.iconphoto(False, photo)
+        fig = Figure(figsize=(5, 4), dpi=100)
+        t = np.arange(0, 3, .01)
+        fig.add_subplot(111).plot(t, 2 * np.sin(2 * np.pi * t))
+        canvas = FigureCanvasTkAgg(fig, master = self.window)
+        canvas.get_tk_widget().grid(row = 0, column = 0, rowspan = 7, columnspan = 3)
+
+        self.userprompt = Label(self.window, font = ('Arial', 16, 'bold'), text = "Enter Stock Name: ")
+        self.userentry = Entry(self.window, font=('courier new',16,'bold'))
+        self.enterbutton = Button(self.window, text = "Enter", command = self.search)
+        self.stockname = Label(self.window, font = ('Arial', 16, 'bold'), text = "Stock Name: ")
+        self.current_stockname = Label(self.window, font = ('courier new', 16, 'bold'), text = "")
+        self.date = Label(self.window, font = ('Arial', 16, 'bold'), text = "Date: ")
+        self.current_date = Label(self.window, font = ('courier new', 16, 'bold'), text = "")
+        self.openingprice = Label(self.window, font = ('Arial', 16, 'bold'), text = "Opening: ")
+        self.current_openingprice = Label(self.window, font = ('courier new', 16, 'bold'), text = "")
+        self.closingprice = Label(self.window, font = ('Arial', 16, 'bold'), text = "Closing: ")
+        self.current_closingprice = Label(self.window, font = ('courier new', 16, 'bold'), text = "")
+        self.dailylow = Label(self.window, font = ('Arial', 16, 'bold'), text = "Daily Low: ")
+        self.current_dailylow = Label(self.window, font = ('courier new', 16, 'bold'), text = "")
+        self.dailyhigh = Label(self.window, font = ('Arial', 16, 'bold'), text = "Daily High: ")
+        self.current_dailyhigh = Label(self.window, font = ('courier new', 16, 'bold'), text = "")
+        self.dailyvolume = Label(self.window, font = ('Arial', 16, 'bold'), text = "Daily Volume: " )
+        self.current_dailyvolume = Label(self.window, font = ('courier new', 16, 'bold') , text = "" )
+        self.userprompt.grid(row = 7, column = 0, sticky='e')
+        self.userentry.grid(row = 7, column = 1)
+        self.enterbutton.grid(row = 7, column = 2, sticky='w')
+        self.stockname.grid(row = 0, column = 3, sticky='e')
+        self.current_stockname.grid(row = 0, column = 4, sticky='w')
+        self.date.grid(row = 1, column = 3, sticky='e')
+        self.current_date.grid(row = 1, column = 4, sticky='w')
+        self.openingprice.grid(row = 2, column = 3, sticky='e')
+        self.current_openingprice.grid(row = 2, column = 4, sticky='w')
+        self.closingprice.grid(row = 3, column = 3, sticky='e')
+        self.current_closingprice.grid(row = 3, column = 4, sticky='w')
+        self.dailylow.grid(row = 4, column = 3, sticky='e')
+        self.current_dailylow.grid(row = 4, column = 4, sticky='w')
+        self.dailyhigh.grid(row = 5, column = 3, sticky='e')
+        self.current_dailyhigh.grid(row = 5, column = 4, sticky='w')
+        self.dailyvolume.grid(row = 6, column = 3, sticky='e')
+        self.current_dailyvolume.grid(row = 6, column = 4, sticky='w')
+        self.window.mainloop()
+
+    def search(self):
+        self.userstocksymbol = self.userentry.get()
+        self.currstock = Stock(0,self.userstocksymbol)
+        self.current_stockname['text'] = self.currstock.getName()
+        self.current_date['text'] = date(year=int(self.currstock.getCurrent()[0][0:4]),month=int(self.currstock.getCurrent()[0][5:7]),day=int(self.currstock.getCurrent()[0][8:10])).strftime('%d %B, %Y (%A)')
+        self.current_openingprice['text'] = '$' + str(round(float(self.currstock.getCurrent()[1]),2))
+        self.current_closingprice['text'] = '$' + str(round(float(self.currstock.getCurrent()[4]),2))
+        self.current_dailylow['text'] = '$' + str(round(float(self.currstock.getCurrent()[3]),2))
+        self.current_dailyhigh['text'] = '$' + str(round(float(self.currstock.getCurrent()[2]),2))
+        self.current_dailyvolume['text'] = str(round(int(self.currstock.getCurrent()[6]),2)) + ' shares'
+
 
 if __name__ == '__main__':
+    mygui = GUI()
+    """
     # Welcome to the StonkScraper V1 (terminal)!
     prompt_inputstock = 'Enter the stock that you would like to look up?\n> '
     print('\n*********************************\n* Welcome to the Stonk Scraper! *\n*********************************')
@@ -93,3 +167,5 @@ if __name__ == '__main__':
                     mainloop = 0
         else:
             print('You entry is not a valid stock symbol.')
+"""
+print('8===D')
