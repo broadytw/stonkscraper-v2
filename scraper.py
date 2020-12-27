@@ -1,8 +1,15 @@
-# This was created by Danila Popel and Nikita Popel. This project was originally created on December 20th, 2020.
+# This was created by Danila Popel and Nikita Popel. This project was originally created on December 24th, 2020.
 
 from bs4 import BeautifulSoup
 import urllib.request, os, platform, time, csv, requests
 from datetime import datetime, timedelta
+import calendar
+
+def monthdelta(date, delta):
+    m, y = (date.month+delta) % 12, date.year + ((date.month)+delta-1) // 12
+    if not m: m = 12
+    d = min(date.day, calendar.monthrange(y, m)[1])
+    return date.replace(day=d,month=m, year=y)
 
 # Below is the function that checks whether or not the stock symbol that the user
 # inputted is a valid stock symbol recognized by the NASDAQ, NYSE, and other exchanges.
@@ -44,8 +51,13 @@ class Stock:
     def __init__(self, history, userstocksymbol):
         self.symbol = userstocksymbol
         req = requests.get(f'https://query1.finance.yahoo.com/v7/finance/download/{userstocksymbol}?period1=0&period2=9999999999&interval=1d&events=history&includeAdjustedClose=true')
-        self.history = req.content.decode('utf-8').split('\n')
+        #self.history = req.content.decode('utf-8').split('\n')
         self.history = [i.split(',') for i in req.content.decode('utf-8').split('\n')][1:]
+        for n,i in enumerate(self.history):
+            for x in i:
+                if x == 'null':
+                    self.history.pop(n)
+        #[i.split(',') for i in req.content.decode('utf-8').split('\n') if 'null' not in i][1:]
         currentstockurl = 'https://finance.yahoo.com/quote/' + self.symbol
         currentpage = requests.get(currentstockurl)
         soup = BeautifulSoup(currentpage.content, 'html5lib')
@@ -131,3 +143,63 @@ class Stock:
         if datechanged == 1:
             print('Using results for closest date (' + userinput_date + ').')
         return [i for i in self.getHistory() if userinput_date in i][0]
+
+
+    def plotStock(self, currdatarange):
+        self.newdataset = []
+
+
+        if currdatarange == 'SELECT RANGE':
+            for i in self.history:
+                self.newdataset.append([i[0],i[4]])
+        elif currdatarange == 'All Time':
+            for i in self.history:
+                self.newdataset.append([i[0],i[4]])
+        elif currdatarange == 'Year':
+            self.tempyear = self.fixDate(str(int(self.getCurrent()[0][0:4]) - 1) + '-' + self.getCurrent()[0][5:7] + '-' + self.getCurrent()[0][8:10])[0]
+            self.lastyear = datetime(int(self.tempyear[0:4]),int(self.tempyear[5:7]),int(self.tempyear[8:10]))
+            for i in self.history:
+                self.temptime = datetime(int(i[0][0:4]),int(i[0][5:7]), int(i[0][8:10]))
+                if self.temptime >= self.lastyear:
+                    self.newdataset.append([i[0],i[4]])
+        elif currdatarange == '6 Months':
+            self.temp6months_1 = self.getCurrent()[0][0:4]+ '-' + self.getCurrent()[0][5:7] + '-' + self.getCurrent()[0][8:10]
+            self.temp6months_2 = datetime(int(self.temp6months_1[0:4]), int(self.temp6months_1[5:7]), int(self.temp6months_1[8:10]))
+            self.temp6months_3 = self.fixDate(str(monthdelta(self.temp6months_2, -6))[0:10])
+            self.temp6months_4 = datetime(int(self.temp6months_3[0][0:4]),int(self.temp6months_3[0][5:7]), int(self.temp6months_3[0][8:10]))
+            for i in self.history:
+                self.temptime = datetime(int(i[0][0:4]),int(i[0][5:7]), int(i[0][8:10]))
+                if self.temptime >= self.temp6months_4:
+                    self.newdataset.append([i[0],i[4]])
+        elif currdatarange == '3 Months':
+            self.temp3months_1 = self.getCurrent()[0][0:4]+ '-' + self.getCurrent()[0][5:7] + '-' + self.getCurrent()[0][8:10]
+            self.temp3months_2 = datetime(int(self.temp3months_1[0:4]), int(self.temp3months_1[5:7]), int(self.temp3months_1[8:10]))
+            self.temp3months_3 = self.fixDate(str(monthdelta(self.temp3months_2, -3))[0:10])
+            self.temp3months_4 = datetime(int(self.temp3months_3[0][0:4]),int(self.temp3months_3[0][5:7]), int(self.temp3months_3[0][8:10]))
+            for i in self.history:
+                self.temptime = datetime(int(i[0][0:4]),int(i[0][5:7]), int(i[0][8:10]))
+                if self.temptime >= self.temp3months_4:
+                    self.newdataset.append([i[0],i[4]])
+        elif currdatarange == 'Month':
+            self.tempmonth_1 = self.getCurrent()[0][0:4]+ '-' + self.getCurrent()[0][5:7] + '-' + self.getCurrent()[0][8:10]
+            self.tempmonth_2 = datetime(int(self.tempmonth_1[0:4]), int(self.tempmonth_1[5:7]), int(self.tempmonth_1[8:10]))
+            self.tempmonth_3 = self.fixDate(str(monthdelta(self.tempmonth_2, -1))[0:10])
+            self.tempmonth_4 = datetime(int(self.tempmonth_3[0][0:4]),int(self.tempmonth_3[0][5:7]), int(self.tempmonth_3[0][8:10]))
+            for i in self.history:
+                self.temptime = datetime(int(i[0][0:4]),int(i[0][5:7]), int(i[0][8:10]))
+                if self.temptime >= self.tempmonth_4:
+                    self.newdataset.append([i[0],i[4]])
+        elif currdatarange == 'Week':
+            self.tempweek_1 = self.getCurrent()[0][0:4]+ '-' + self.getCurrent()[0][5:7] + '-' + self.getCurrent()[0][8:10]
+            self.tempweek_2 = datetime(int(self.tempweek_1[0:4]), int(self.tempweek_1[5:7]), int(self.tempweek_1[8:10]))
+            self.tempweek_3 = self.fixDate(str(self.tempweek_2 - timedelta(7))[0:10])
+            self.tempweek_4 = datetime(int(self.tempweek_3[0][0:4]), int(self.tempweek_3[0][5:7]), int(self.tempweek_3[0][8:10]))
+
+            for i in self.history:
+                self.temptime = datetime(int(i[0][0:4]),int(i[0][5:7]), int(i[0][8:10]))
+                if self.temptime >= self.tempweek_4:
+                    self.newdataset.append([i[0],i[4]])
+
+        #print(self.temp3months_3)
+        #print(self.newdataset)
+        return self.newdataset
