@@ -5,6 +5,7 @@ import urllib.request, os, platform, time, csv, requests
 from datetime import datetime, timedelta
 import calendar
 
+# Below is the function that subtracts the given amount of months from the inputted datetime.
 def monthdelta(date, delta):
     m, y = (date.month+delta) % 12, date.year + ((date.month)+delta-1) // 12
     if not m: m = 12
@@ -144,11 +145,12 @@ class Stock:
             print('Using results for closest date (' + userinput_date + ').')
         return [i for i in self.getHistory() if userinput_date in i][0]
 
-
-    def plotStock(self, currdatarange):
+    # This method returns a new data set that contains the dates and closing prices on those getDates.
+    # This is called before plotting the data. This method takes in the string value 'currdatarange' which is
+    # the currently selected option on the drop down menu and the 'userdate' which pulls in what the user
+    # has typed in the custom date textbox
+    def plotStock(self, currdatarange, userdate):
         self.newdataset = []
-
-
         if currdatarange == 'SELECT RANGE':
             for i in self.history:
                 self.newdataset.append([i[0],i[4]])
@@ -194,12 +196,15 @@ class Stock:
             self.tempweek_2 = datetime(int(self.tempweek_1[0:4]), int(self.tempweek_1[5:7]), int(self.tempweek_1[8:10]))
             self.tempweek_3 = self.fixDate(str(self.tempweek_2 - timedelta(7))[0:10])
             self.tempweek_4 = datetime(int(self.tempweek_3[0][0:4]), int(self.tempweek_3[0][5:7]), int(self.tempweek_3[0][8:10]))
-
             for i in self.history:
                 self.temptime = datetime(int(i[0][0:4]),int(i[0][5:7]), int(i[0][8:10]))
                 if self.temptime >= self.tempweek_4:
                     self.newdataset.append([i[0],i[4]])
-
-        #print(self.temp3months_3)
-        #print(self.newdataset)
+        elif currdatarange == 'Custom':
+            print(userdate)
+            self.tempcustom_4 = datetime(int(userdate[0:4]), int(userdate[5:7]), int(userdate[8:10]))
+            for i in self.history:
+                self.temptime = datetime(int(i[0][0:4]),int(i[0][5:7]), int(i[0][8:10]))
+                if self.temptime >= self.tempcustom_4:
+                    self.newdataset.append([i[0],i[4]])
         return self.newdataset

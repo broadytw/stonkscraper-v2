@@ -5,18 +5,16 @@ from datetime import datetime, timedelta, date
 from scraper import *
 from tkinter import *
 from tkinter.ttk import *
-import numpy as np
+from numpy import *
 import matplotlib.dates as mdates
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
-"""
-"""
 
 class GUI:
     def __init__(self):
         #tk_theme = [['light',['#000','#fff'],['#888','#fff'],['#aaa','#000']],['dark',['#fff','#000'],['#fff','#888'],['#000','#aaa']]]
-        self.gui_theme = ['white','']
+        self.gui_theme = ['white','black']
 
 
         self.window = Tk()
@@ -26,7 +24,7 @@ class GUI:
         self.window.title("Stonk Scraper")
         #self.window.geometry('1400x480')
         photo = PhotoImage(file = "cashmoney.png")
-        self.range_options = ['SELECT RANGE', 'Week', 'Month', '3 Months', '6 Months', 'Year', 'All Time']
+        self.range_options = ['SELECT RANGE', 'Week', 'Month', '3 Months', '6 Months', 'Year', 'All Time', 'Custom']
         self.var1 = StringVar(self.window)
         self.var1.set(self.range_options[0])
         self.window.iconphoto(False, photo)
@@ -49,10 +47,20 @@ class GUI:
         self.current_dailyhigh = Label(self.window, font = ('courier new', 16, 'bold'), text = "", background = self.gui_theme[0])
         self.dailyvolume = Label(self.window, font = ('Arial', 16, 'bold'), text = "Daily Volume: " , background = self.gui_theme[0])
         self.current_dailyvolume = Label(self.window, font = ('courier new', 16, 'bold') , text = "" , background = self.gui_theme[0])
-        self.userprompt.grid(row = 7, column = 0)
-        self.userentry.grid(row = 7, column = 1)
-        self.rangedrop.grid(row = 7, column = 2)
-        self.enterbutton.grid(row = 7, column = 3)
+        self.changeout = Label(self.window, font = ('Arial', 16, 'bold') , text = "Change: " , background = self.gui_theme[0])
+        self.current_change = Label(self.window, font = ('courier new', 16, 'bold') , text = "" , background = self.gui_theme[0])
+
+        self.usererror = Label(self.window, font = ('courier new', 16, 'bold') , text = "" , background = self.gui_theme[0], foreground = 'red')
+        self.userprompt.grid(row = 8, column = 0, sticky = 'e')
+        self.userentry.grid(row = 8, column = 1, sticky = 'w')
+        self.rangedrop.grid(row = 8, column = 2)
+        self.enterbutton.grid(row = 8, column = 3)
+
+        # Dane's attempt to add custom dates
+        self.cusdate = 'Enter Custom Date (----/--/--):'
+        self.cusdate_out = Label(self.window, font = ('Arial', 16, 'bold'), text = self.cusdate, background = self.gui_theme[0])
+        self.cusdate_entry = Entry(self.window, font=('courier new',16,'bold'))
+
         self.stockname.grid(row = 0, column = 4, sticky='e')
         self.current_stockname.grid(row = 0, column = 5, sticky='w')
         self.date.grid(row = 1, column = 4, sticky='e')
@@ -67,6 +75,9 @@ class GUI:
         self.current_dailyhigh.grid(row = 5, column = 5, sticky='w')
         self.dailyvolume.grid(row = 6, column = 4, sticky='e')
         self.current_dailyvolume.grid(row = 6, column = 5, sticky='w')
+        self.changeout.grid(row = 7, column = 4, sticky = 'e')
+        self.current_change.grid(row = 7, column = 5, sticky = 'w')
+        self.usererror.grid(row = 12, column = 0, columnspan = 4)
 
         self.userstocksymbol = '%5EGSPC'
         self.currstock = Stock(0,self.userstocksymbol)
@@ -83,29 +94,48 @@ class GUI:
         dates = [datetime(int(i[0][0:4]),int(i[0][5:7]), int(i[0][8:10])) for i in self.currstock.getHistory()]
         fig.add_subplot(111).plot_date(dates,closingprices, '-', linewidth = 0.5)
         canvas = FigureCanvasTkAgg(fig, master = self.window)
-        canvas.get_tk_widget().grid(row = 0, column = 0, rowspan = 7, columnspan = 4)
+        canvas.get_tk_widget().grid(row = 0, column = 0, rowspan = 8, columnspan = 4)
 
         #self.menu_thing()
-
+        self.var1.trace("w", self.customdaterange)
         self.window.mainloop()
 
+    def customdaterange(self, *args):
+        if(self.var1.get()) == 'Custom':
+            self.cusdate_out.grid(row = 10, column = 0, sticky='e')
+            self.cusdate_entry.grid(row = 10, column = 1, sticky= 'w')
+        else:
+            self.cusdate_out.grid_remove()
+            self.cusdate_entry.grid_remove()
+
     def search(self):
-        self.userstocksymbol = self.userentry.get()
-        self.currstock = Stock(0,self.userstocksymbol)
-        self.currentvalues = self.currstock.plotStock(self.var1.get())
-        fig = Figure(figsize=(10, 8), dpi=100)
-        self.closingprices = [round(float(i[1]),2) for i in self.currentvalues]
-        self.dates = [datetime(int(i[0][0:4]),int(i[0][5:7]), int(i[0][8:10])) for i in self.currentvalues]
-        fig.add_subplot(111).plot_date(self.dates,self.closingprices, '-', linewidth = 0.5, linestyle = 'solid')
-        canvas = FigureCanvasTkAgg(fig, master = self.window)
-        canvas.get_tk_widget().grid(row = 0, column = 0, rowspan = 7, columnspan = 3)
-        self.current_stockname['text'] = self.currstock.getName()
-        self.current_date['text'] = date(year=int(self.currstock.getCurrent()[0][0:4]),month=int(self.currstock.getCurrent()[0][5:7]),day=int(self.currstock.getCurrent()[0][8:10])).strftime('%d %B, %Y (%A)')
-        self.current_openingprice['text'] = '$' + str(round(float(self.currstock.getCurrent()[1]),2))
-        self.current_closingprice['text'] = '$' + str(round(float(self.currstock.getCurrent()[4]),2))
-        self.current_dailylow['text'] = '$' + str(round(float(self.currstock.getCurrent()[3]),2))
-        self.current_dailyhigh['text'] = '$' + str(round(float(self.currstock.getCurrent()[2]),2))
-        self.current_dailyvolume['text'] = str(round(int(self.currstock.getCurrent()[6]),2)) + ' shares'
+        self.userstocksymbol = str(self.userentry.get()).upper()
+        self.userdate = str(self.cusdate_entry.get())
+        if checkExist(self.userstocksymbol) == True:
+            if self.userdate != '':
+                correctdateformat = isDate(self.userdate)
+                if correctdateformat != True:
+                    self.usererror['text'] = '*ERROR*, Date format incorrect'
+                else:
+                    self.usererror['text'] = ''
+            self.currstock = Stock(0,self.userstocksymbol)
+            self.currentvalues = self.currstock.plotStock(self.var1.get(), self.userdate)
+            fig = Figure(figsize=(10, 8), dpi=100)
+            self.closingprices = [round(float(i[1]),2) for i in self.currentvalues]
+            self.dates = [datetime(int(i[0][0:4]),int(i[0][5:7]), int(i[0][8:10])) for i in self.currentvalues]
+            fig.add_subplot(111).plot_date(self.dates,self.closingprices, '-', linewidth = 0.5, linestyle = 'solid')
+            canvas = FigureCanvasTkAgg(fig, master = self.window)
+            canvas.get_tk_widget().grid(row = 0, column = 0, rowspan = 7, columnspan = 4)
+            self.current_stockname['text'] = self.currstock.getName()
+            self.current_date['text'] = date(year=int(self.currstock.getCurrent()[0][0:4]),month=int(self.currstock.getCurrent()[0][5:7]),day=int(self.currstock.getCurrent()[0][8:10])).strftime('%d %B, %Y (%A)')
+            self.current_openingprice['text'] = '$' + str(round(float(self.currstock.getCurrent()[1]),2))
+            self.current_closingprice['text'] = '$' + str(round(float(self.currstock.getCurrent()[4]),2))
+            self.current_dailylow['text'] = '$' + str(round(float(self.currstock.getCurrent()[3]),2))
+            self.current_dailyhigh['text'] = '$' + str(round(float(self.currstock.getCurrent()[2]),2))
+            self.current_dailyvolume['text'] = str(round(int(self.currstock.getCurrent()[6]),2)) + ' shares'
+            self.current_change['text'] = self.currstock.compareStock(str(self.currentvalues[0][0]), str(self.currstock.getCurrent()[0]))
+        else:
+            self.usererror['text'] = '*ERROR*, try another stock'
 
     def menu_thing(self):
         # call main 'menubar'
