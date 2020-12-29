@@ -2,7 +2,8 @@
 
 # local packages
 from scraper import *
-from display import *
+from display2 import *
+# from display import *
 
 # python3 standard libraries
 import urllib.request, os, platform, time, csv, requests
@@ -18,5 +19,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 
+# the only purpose for main in this application is to load the GUI class from display.py
 if __name__ == '__main__':
     GUI()
