@@ -1,8 +1,8 @@
-<h3>Creators:</h3>
-_Nikita Popel_ __&__ _Danila Popel_
+<h1>StonkScraper</h1>
+<h3>Creators</h3>
+<i>Nikita Popel</i> <b>&</b> <i>Danila Popel</i>
 
-<h3>Creation Date</h3>
-<i>December 24th, 2020</i>
+<b>Creation Date:</b> <i>December 24th, 2020</i>
 
 <h3>Description</h3>
 <p>
@@ -13,21 +13,20 @@ Below is a list of goals that we would like to implement. If you have worked on 
 </p>
 
 <h3>Dependencies</h3>
-<h6>pip:</h6>
 <ul>
 <li>bs4<ul><li>web scraper</li></ul></li>
 <li>html5lib<ul><li>parser</li></ul></li>
 <li>numpy</li>
 <li>matplotlib</li>
 </ul>
->pip install bs4, numpy, matplotlib, html5lib
+<blockquote>pip install bs4, numpy, matplotlib, html5lib</blockquote>
 
 ?tkinter?
 
 
 <h3>Short-term Goals</h3>
 <ul>
-<li><i style='color:#a00'>N/A</i></li>
+<li><i>N/A</i></li>
 </ul>
 
 <h3>Long-term Goals</h3>
@@ -37,10 +36,11 @@ Below is a list of goals that we would like to implement. If you have worked on 
 <li>Stock simulating game, allowing the user to invest fake money and cash in on fake dividends every quarter and reinvest their funds.<ul><li>could possibly be added as a functionality in the menu</li></ul></li>
 </ol>
 
-<h3>Update Log</h3>
-<span style='color:#888'>Date</span> | Log
------------- | -------------
-2020/12/27 | Dane Aggen, Nikita Popel - Add custom date range (user inputs a date in the past in order to display just that range in the graph window and show percentage change since then)
-2020/12/27 | Nikita Popel - Add percentage change on right side as well
-2020/12/29 | Nikita Popel, Danila Popel - Put everything in frames so that we can implement menu, implemented menubar
-2020/12/30 | Danila Popel - Screen ratio fixes
+<h2>Update Log</h2>
+<table>
+<tr><th>Date</th><th>Log</th></tr>
+<tr><td>2020/12/27</td><td>Dane Aggen, Nikita Popel - Add custom date range (user inputs a date in the past in order to display just that range in the graph window and show percentage change since then)</td></tr>
+<tr><td>2020/12/27</td><td>Nikita Popel - Add percentage change on right side as well</td></tr>
+<tr><td>2020/12/29</td><td>Nikita Popel, Danila Popel - Put everything in frames so that we can implement menu, implemented menubar</td></tr>
+<tr><td>2020/12/30</td><td>Danila Popel - Screen ratio fixes</td></tr>
+</table>
