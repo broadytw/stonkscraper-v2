@@ -2,8 +2,7 @@
 
 # local packages
 from scraper import *
-from display2 import *
-# from display import *
+from display import *
 
 # python3 standard libraries
 import urllib.request, os, platform, time, csv, requests
@@ -14,6 +13,7 @@ from tkinter.ttk import *
 
 # pip packages
 from bs4 import BeautifulSoup
+import html5lib ### <--- ?
 import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (

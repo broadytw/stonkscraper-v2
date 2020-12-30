@@ -114,10 +114,10 @@ class Stock:
                 date2_index = n
         if float(self.history[date1_index][4]) < float(self.history[date2_index][4]):
             isGain = True
-            output = 'the percentage change since ' + str(date1) + ' is +'
+            output = 'since ' + str(date1) + ' is +'
         else:
             isGain = False
-            output = 'the percentage change since ' + str(date1) + ' is -'
+            output = 'since ' + str(date1) + ' is -'
         percentage_change = ((float(self.history[date1_index][4]) - float(self.history[date2_index][4])) / float(self.history[date1_index][4])) * (-100)
         output += str(round(percentage_change, 2)) + '%'
         return output
@@ -201,7 +201,6 @@ class Stock:
                 if self.temptime >= self.tempweek_4:
                     self.newdataset.append([i[0],i[4]])
         elif currdatarange == 'Custom':
-            print(userdate)
             self.tempcustom_4 = datetime(int(userdate[0:4]), int(userdate[5:7]), int(userdate[8:10]))
             for i in self.history:
                 self.temptime = datetime(int(i[0][0:4]),int(i[0][5:7]), int(i[0][8:10]))

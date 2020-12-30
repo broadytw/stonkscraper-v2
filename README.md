@@ -1,8 +1,8 @@
 <h1>StonkScraper</h1>
 <h3>Creators</h3>
-<i>Nikita Popel</i> <b>&</b> <i>Danila Popel</i>
+Nikita Popel <b>&</b> Danila Popel
 
-<b>Creation Date:</b> <i>December 24th, 2020</i>
+<i>Creation Date - December 24th, 2020</i>
 
 <h3>Description</h3>
 <p>
@@ -21,20 +21,18 @@ Below is a list of goals that we would like to implement. If you have worked on 
 </ul>
 <blockquote>pip install bs4, numpy, matplotlib, html5lib</blockquote>
 
-?tkinter?
-
-
 <h3>Short-term Goals</h3>
 <ul>
 <li><i>N/A</i></li>
 </ul>
 
 <h3>Long-term Goals</h3>
-<ol>
-<li>Add drop down arrow for recently visited stocks</li>
+<ul>
+<li>Show actively highlighted item on matplotlib graph</li>
 <li>local storage for themes, save favorite stocks, step before stock sim implementation</li>
+<li>Add drop down arrow for recently visited stocks (using local storage)<ul><li>current session & all sessions</li></ul></li>
 <li>Stock simulating game, allowing the user to invest fake money and cash in on fake dividends every quarter and reinvest their funds.<ul><li>could possibly be added as a functionality in the menu</li></ul></li>
-</ol>
+</ul>
 
 <h2>Update Log</h2>
 <table>
